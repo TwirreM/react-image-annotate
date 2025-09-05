@@ -5,6 +5,17 @@ import { IMatrix, Matrix } from "transformation-matrix-js";
 
 const getDefaultMat = () => Matrix.from(1, 0, 0, 1, -10, -10);
 
+// Zoom clamps
+const MIN_SCALE = 0.05
+const MAX_SCALE = 2
+
+// Sensitivity: pixel delta -> log-scale delta (tune to taste)
+// Negative so positive deltaY (scroll down) zooms OUT.
+const LOG_SENSITIVITY = -0.0015
+
+// Easing toward target per frame (0..1). Smaller = smoother/slower.
+const EASE = 0.18
+
 type UseMouseProps = {
   canvasEl: MutableRefObject<HTMLCanvasElement | null>;
   changeMat: (mat: IMatrix) => void;
@@ -57,24 +68,93 @@ export default ({
   const mousePosition = useRef({ x: 0, y: 0 });
   const prevMousePosition = useRef({ x: 0, y: 0 });
 
-  const zoomIn = (
-    direction: { to: number } | number,
-    point: { x: number; y: number }
-  ) => {
-    const [mx, my] = [point.x, point.y];
-    let scale =
-      typeof direction === "object"
-        ? direction.to / mat.a
-        : 1 + 0.2 * direction;
+  // --- Smooth zoom state ---
+  const targetLogScale = useRef(Math.log(mat.a || 1))
+  const animRaf = useRef(0)
+  const anchorRef = useRef({ x: 0, y: 0 })
 
-    // NOTE: We're mutating mat here
-    mat.translate(mx, my).scaleU(scale);
-    if (mat.a > 2) mat.scaleU(2 / mat.a);
-    if (mat.a < 0.05) mat.scaleU(0.05 / mat.a);
-    mat.translate(-mx, -my);
+  const setTargetScale = (nextScale: number) => {
+    // Clamp target, then store in log-space
+    const clamped = Math.min(MAX_SCALE, Math.max(MIN_SCALE, nextScale))
+    targetLogScale.current = Math.log(clamped)
+    startZoomAnimation()
+  }
 
-    changeMat(mat.clone());
-  };
+  const startZoomAnimation = () => {
+    if (animRaf.current) return
+    const step = () => {
+      animRaf.current = 0
+      const currentLog = Math.log(mat.a || 1)
+      const target = targetLogScale.current
+      const diff = target - currentLog
+
+      if (Math.abs(diff) < 0.0001) {
+        // Close enough; snap to target once and stop
+        const desired = Math.exp(target)
+        const scale = desired / (mat.a || 1)
+        if (scale !== 1) zoomBy(scale, anchorRef.current)
+        return
+      }
+
+      // Move a fraction toward target
+      const nextLog = currentLog + diff * EASE
+      const desired = Math.exp(nextLog)
+      const scale = desired / (mat.a || 1)
+
+      zoomBy(scale, anchorRef.current)
+      animRaf.current = requestAnimationFrame(step)
+    }
+    animRaf.current = requestAnimationFrame(step)
+  }
+
+  // Normalize wheel to pixels
+  const normalizeWheelDelta = (e: WheelEvent) => {
+    const LINE_HEIGHT = 16
+    const PAGE_HEIGHT = window.innerHeight || 800
+    let d = e.deltaY
+    if (e.deltaMode === 1) d *= LINE_HEIGHT
+    else if (e.deltaMode === 2) d *= PAGE_HEIGHT
+    return -d
+  }
+
+  // Smooth, multiplicative zoom by a scale factor around a point
+  const zoomBy = (scale: number, point: { x: number, y: number }) => {
+    const { x: mx, y: my } = point
+
+    // Mutate mat (as before)
+    mat.translate(mx, my).scaleU(scale)
+    if (mat.a > MAX_SCALE) mat.scaleU(MAX_SCALE / mat.a)
+    if (mat.a < MIN_SCALE) mat.scaleU(MIN_SCALE / mat.a)
+    mat.translate(-mx, -my)
+
+    changeMat(mat.clone())
+  }
+
+  // Backward-compatible: support `{to: number}` and legacy +/- direction
+  const zoomIn = (direction: { to: number } | number, point: { x: number, y: number }) => {
+    const { x: mx, y: my } = point
+    anchorRef.current = { x: mx, y: my }
+
+    if (typeof direction === "object" && direction && typeof direction.to === "number") {
+      // Jump target to specific absolute scale
+      setTargetScale(direction.to)
+      return
+    }
+
+    if (direction === 1 || direction === -1) {
+      // Legacy mouse “ticks”: nudge target ~10% per notch, then animate smoothly
+      const desired = (mat.a || 1) * (direction === 1 ? 1.1 : 1 / 1.1)
+      setTargetScale(desired)
+      return
+    }
+
+    if (typeof direction === "number") {
+      // Treat as pixel delta (from wheel); accumulate on target smoothly
+      const currentTarget = Math.exp(targetLogScale.current)
+      const desired = currentTarget * Math.exp(direction * LOG_SENSITIVITY)
+      setTargetScale(desired)
+    }
+  }
 
   const mouseEvents = {
     onMouseMove: (e: MouseEvent) => {
@@ -198,9 +278,20 @@ export default ({
       }
     },
     onWheel: (e: WheelEvent) => {
-      const direction = e.deltaY > 0 ? 1 : e.deltaY < 0 ? -1 : 0;
-      zoomIn(direction, mousePosition.current);
-      // e.preventDefault()
+      // Smooth zoom: update target, animation handles the rest
+      e.preventDefault()
+
+      // Use current mouse as anchor
+      anchorRef.current = { x: mousePosition.current.x, y: mousePosition.current.y }
+
+      const deltaPixels = normalizeWheelDelta(e)
+
+      // Special-case: macOS pinch-zoom sends ctrlKey=true; make it a bit gentler
+      const sensitivity = e.ctrlKey ? LOG_SENSITIVITY * 0.7 : LOG_SENSITIVITY
+
+      const currentTarget = Math.exp(targetLogScale.current)
+      const desired = currentTarget * Math.exp(deltaPixels * sensitivity)
+      setTargetScale(desired)
     },
     onContextMenu: (e: MouseEvent) => {
       e.preventDefault();

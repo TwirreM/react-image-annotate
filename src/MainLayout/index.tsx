@@ -49,7 +49,7 @@ const useStyles = tss.create({
     display: "flex",
     flexGrow: 1,
     flexDirection: "column",
-    height: "100%",
+    height: "100dvh",
     maxHeight: "100vh",
     backgroundColor: "#fff",
     overflow: "hidden",
