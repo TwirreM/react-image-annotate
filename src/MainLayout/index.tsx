@@ -36,7 +36,6 @@ import { HotKeys } from "react-hotkeys";
 import { grey } from "@mui/material/colors";
 import { notEmpty } from "../utils/not-empty.ts";
 import { ALL_TOOLS } from "./all-tools-list.ts";
-import Immutable from "seamless-immutable";
 import Workspace from "../workspace/Workspace";
 import { tss } from "tss-react/mui";
 import { RegionLabelProps } from "../RegionLabel";
@@ -136,7 +135,7 @@ export const MainLayout = ({
     return fn;
   };
 
-  const { currentImageIndex, activeImage } = getActiveImage(Immutable(state));
+  const { currentImageIndex, activeImage } = getActiveImage(state);
   let nextImage;
   if (currentImageIndex !== null && "images" in state) {
     nextImage = state.images[+currentImageIndex + 1];

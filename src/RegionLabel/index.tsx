@@ -13,7 +13,6 @@ import TextField from "@mui/material/TextField";
 import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
 
-import { asMutable } from "seamless-immutable";
 import { tss } from "tss-react/mui";
 import { grey } from "@mui/material/colors";
 
@@ -196,14 +195,12 @@ export const RegionLabel = ({
                       });
                     }}
                     value={selectedValue}
-                    options={asMutable(
-                      allowedClasses?.map((c) => {
-                        if (typeof c === "string") {
-                          return { value: c, label: c };
-                        }
-                        return { value: c.id, label: c.label };
-                      })
-                    )}
+                    options={allowedClasses?.map((c) => {
+                      if (typeof c === "string") {
+                        return { value: c, label: c };
+                      }
+                      return { value: c.id, label: c.label };
+                    })}
                   />
                 ) : (
                   <Select
@@ -216,14 +213,12 @@ export const RegionLabel = ({
                       });
                     }}
                     value={selectedValue}
-                    options={asMutable(
-                      allowedClasses?.map((c) => {
-                        if (typeof c === "string") {
-                          return { value: c, label: c };
-                        }
-                        return { value: c.id, label: c.label };
-                      })
-                    )}
+                    options={allowedClasses?.map((c) => {
+                      if (typeof c === "string") {
+                        return { value: c, label: c };
+                      }
+                      return { value: c.id, label: c.label };
+                    })}
                   />
                 )}
               </div>
@@ -252,9 +247,7 @@ export const RegionLabel = ({
                     value: c,
                   }))}
                   isMulti={!tagSingleSelection}
-                  options={asMutable(
-                    allowedTags?.map((c) => ({ value: c, label: c }))
-                  )}
+                  options={allowedTags?.map((c) => ({ value: c, label: c }))}
                 />
               </div>
             )}

@@ -8,7 +8,6 @@ import {
   RegionAllowedActions,
 } from "../MainLayout/types";
 import { ComponentType, FunctionComponent, useEffect, useReducer } from "react";
-import Immutable, { ImmutableObject } from "seamless-immutable";
 
 import type { KeypointsDefinition } from "../types/region-tools.ts";
 import MainLayout from "../MainLayout";
@@ -21,6 +20,7 @@ import imageReducer from "./reducers/image-reducer";
 import useEventCallback from "use-event-callback";
 import videoReducer from "./reducers/video-reducer";
 import { AutosegOptions } from "autoseg/webworker";
+import { removeProperty } from "../utils/remove-property.ts";
 
 export type AnnotatorProps = {
   taskDescription?: string;
@@ -121,11 +121,11 @@ export const Annotator = ({
       ? combineReducers(imageReducer, generalReducer)
       : combineReducers(videoReducer, generalReducer)
   ) as (
-    state: ImmutableObject<MainLayoutState>,
+    state: MainLayoutState,
     action: Action
-  ) => ImmutableObject<MainLayoutState>;
+  ) => MainLayoutState;
 
-  const immutableState = Immutable({
+  const immutableState = {
     annotationType,
     showTags,
     allowedArea,
@@ -165,7 +165,7 @@ export const Annotator = ({
           videoSrc,
           keyframes,
         }),
-  });
+  };
   const [state, dispatchToReducer] = useReducer(
     historyHandler(combinedReducers) as unknown as (
       state: MainLayoutState,
@@ -176,9 +176,7 @@ export const Annotator = ({
 
   const dispatch = useEventCallback((action: Action) => {
     if (action.type === "HEADER_BUTTON_CLICKED") {
-      const value = (Immutable(state) as ImmutableObject<MainLayoutState>)
-        .without("history")
-        .asMutable({ deep: true });
+      const value = removeProperty(state, "history") as any;
       if (["Exit", "Done", "Save", "Complete"].includes(action.buttonName)) {
         return onExit(value);
       } else if (action.buttonName === "Next" && onNextImage) {

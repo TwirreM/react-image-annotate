@@ -2,7 +2,6 @@
 
 import { clamp } from "../../utils/clamp";
 import { ExpandingLine } from "../../types/region-tools.ts";
-import Immutable from "seamless-immutable";
 
 export default (expandingLine: ExpandingLine) => {
   const expandingWidth = expandingLine.expandingWidth || 0.005;
@@ -22,7 +21,7 @@ export default (expandingLine: ExpandingLine) => {
     ];
   });
   const firstSection = pointPairs.map(([p1]) => p1);
-  const secondSection = Immutable.asMutable(pointPairs.map(([_, p2]) => p2));
+  const secondSection = pointPairs.map(([_, p2]) => p2);
   secondSection.reverse();
 
   const newPoints = firstSection

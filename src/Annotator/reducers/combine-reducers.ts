@@ -1,7 +1,6 @@
 import { Action, MainLayoutStateBase } from "../../MainLayout/types.ts";
-import { ImmutableObject } from "seamless-immutable";
 
-export default <T extends ImmutableObject<MainLayoutStateBase>>(
+export default <T extends MainLayoutStateBase>(
     ...reducers: ((state: T, action: Action) => T)[]
   ) =>
   (state: T, action: Action) => {

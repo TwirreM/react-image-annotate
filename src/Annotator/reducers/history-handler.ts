@@ -1,8 +1,8 @@
 // @flow
 
 import { Action, MainLayoutState } from "../../MainLayout/types";
-import Immutable, { ImmutableObject } from "seamless-immutable";
 import moment from "moment";
+import { removeProperty } from "../../utils/remove-property.ts";
 
 const typesToSaveWithHistory: Record<string, string> = {
   BEGIN_BOX_TRANSFORM: "Transform/Move Box",
@@ -10,37 +10,37 @@ const typesToSaveWithHistory: Record<string, string> = {
   DELETE_REGION: "Delete Region",
 };
 
-export const saveToHistory = <T extends ImmutableObject<MainLayoutState>>(
+export const saveToHistory = <T extends MainLayoutState>(
   state: T,
   name: string
-) =>
-  Immutable(state).updateIn(["history"], (h) => {
-    const newValue = {
+) => ({
+  ...state,
+  history: [
+    {
       time: moment().toDate(),
-      state: Immutable(state).without("history"),
+      state: removeProperty(state, "history"),
       name,
-    };
-    const prevItems = h || [];
-
-    return [newValue, ...prevItems].slice(0, 9);
-  });
+    },
+    ...(state.history || []).slice(0, 8),
+  ],
+});
 
 export default (
   reducer: (
-    state: ImmutableObject<MainLayoutState>,
+    state: MainLayoutState,
     action: Action
-  ) => ImmutableObject<MainLayoutState>
+  ) => MainLayoutState
 ) => {
-  return (state: ImmutableObject<MainLayoutState>, action: Action) => {
+  return (state: MainLayoutState, action: Action) => {
     const prevState = state;
     const nextState = reducer(state, action);
 
     if (action.type === "RESTORE_HISTORY") {
       if (state.history.length > 0) {
-        const newState = Immutable(
-          nextState.history[0].state
-        ) as ImmutableObject<MainLayoutState>;
-        return newState.setIn(["history"], nextState.history.slice(1));
+        return {
+          ...nextState.history[0].state,
+          history: nextState.history.slice(1),
+        }
       }
     } else {
       if (
@@ -49,17 +49,15 @@ export default (
       ) {
         const historyItem = {
           time: moment().toDate(),
-          state: (
-            Immutable(prevState) as ImmutableObject<MainLayoutState>
-          ).without("history"),
+          state: removeProperty(prevState, "history"),
           name: typesToSaveWithHistory[action.type] || action.type,
         };
         const prevItems = nextState.history || [];
         const newValue = [historyItem, ...prevItems].slice(0, 9);
-        const immutableNextState = Immutable(
-          nextState
-        ) as ImmutableObject<MainLayoutState>;
-        return immutableNextState.setIn(["history"], newValue);
+        return {
+          ...nextState,
+          history: newValue,
+        };
       }
     }
 

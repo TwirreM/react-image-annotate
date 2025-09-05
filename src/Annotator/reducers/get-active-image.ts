@@ -1,7 +1,7 @@
-import Immutable, { ImmutableObject } from "seamless-immutable";
 import { Image, MainLayoutState, VideoImage } from "../../MainLayout/types";
+import { getIn } from "../../utils/nested-dict-access";
 
-export default (state: ImmutableObject<MainLayoutState>) => {
+export default (state: MainLayoutState) => {
   let currentImageIndex: number | null = null;
   let pathToActiveImage: string[] = [];
   let activeImage: Image | VideoImage | null = null;
@@ -12,11 +12,11 @@ export default (state: ImmutableObject<MainLayoutState>) => {
       activeImage = null;
     } else {
       pathToActiveImage = ["images", currentImageIndex.toString()];
-      activeImage = Immutable(state).getIn(pathToActiveImage);
+      activeImage = getIn(state, pathToActiveImage);
     }
   } else if (state.annotationType === "video") {
     pathToActiveImage = ["keyframes", `${state.currentVideoTime || 0}`];
-    activeImage = Immutable(state).getIn(pathToActiveImage) || null;
+    activeImage = getIn(state, pathToActiveImage) || null;
   }
   return { currentImageIndex, pathToActiveImage, activeImage };
 };

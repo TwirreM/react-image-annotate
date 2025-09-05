@@ -4,7 +4,6 @@ import { memo } from "react";
 import colorAlpha from "color-alpha";
 import { clamp } from "../utils/clamp.ts";
 import { KeypointsDefinition, Line, Region } from "../types/region-tools.ts";
-import Immutable from "seamless-immutable";
 import { ImagePosition } from "../types/common.ts";
 
 type RegionComponentProps = {
@@ -151,7 +150,7 @@ const RegionComponents = {
       ];
     });
     const firstSection = pointPairs.map(([p1]) => p1);
-    const secondSection = Immutable.asMutable(pointPairs.map(([_, p2]) => p2));
+    const secondSection = pointPairs.map(([_, p2]) => p2);
     secondSection.reverse();
     const lastPoint = points.slice(-1)[0];
     return (

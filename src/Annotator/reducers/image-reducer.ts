@@ -4,19 +4,20 @@ import type {
   Action,
   MainLayoutImageAnnotationState,
 } from "../../MainLayout/types";
-import Immutable, { ImmutableObject } from "seamless-immutable";
 import getActiveImage from "./get-active-image";
+import { setIn } from "../../utils/nested-dict-access.ts";
 
 export default (
-  state: ImmutableObject<MainLayoutImageAnnotationState>,
+  state: MainLayoutImageAnnotationState,
   action: Action
-): ImmutableObject<MainLayoutImageAnnotationState> => {
-  const { currentImageIndex } = getActiveImage(Immutable(state));
+): MainLayoutImageAnnotationState => {
+  const { currentImageIndex } = getActiveImage(state);
 
   switch (action.type) {
     case "IMAGE_OR_VIDEO_LOADED": {
       if (!currentImageIndex) return state;
-      return Immutable(state).setIn(
+      return setIn(
+        state,
         ["images", currentImageIndex.toString(), "pixelSize"],
         {
           w: action.metadata.naturalWidth,

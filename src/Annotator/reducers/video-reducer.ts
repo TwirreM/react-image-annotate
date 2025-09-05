@@ -4,22 +4,21 @@ import type {
   Action,
   MainLayoutVideoAnnotationState,
 } from "../../MainLayout/types";
-import Immutable, { ImmutableObject } from "seamless-immutable";
+import { setIn } from "../../utils/nested-dict-access";
 import getImpliedVideoRegions from "./get-implied-video-regions";
 import { saveToHistory } from "./history-handler";
+import { removeProperty } from "../../utils/remove-property.ts";
 
 export default (
-  state: ImmutableObject<MainLayoutVideoAnnotationState>,
+  state: MainLayoutVideoAnnotationState,
   action: Action
-): ImmutableObject<MainLayoutVideoAnnotationState> => {
+): MainLayoutVideoAnnotationState => {
   const copyImpliedRegions = () => {
-    const newState = Immutable(
-      saveToHistory(Immutable(state), "Add Keyframe")
-    ) as ImmutableObject<MainLayoutVideoAnnotationState>;
+    const newState = saveToHistory(state, "Add Keyframe");
 
-    return newState.setIn(["keyframes", `${state.currentVideoTime || 0}`], {
+    return setIn(newState, ["keyframes", `${state.currentVideoTime || 0}`], {
       regions: getImpliedVideoRegions(
-        newState.keyframes.asMutable({ deep: true }),
+        newState.keyframes,
         state.currentVideoTime
       ),
     });
@@ -29,7 +28,7 @@ export default (
     case "IMAGE_OR_VIDEO_LOADED": {
       const { duration } = action.metadata;
       if (typeof duration === "number") {
-        return Immutable(state).setIn(["videoDuration"], duration * 1000);
+        return { ...state, videoDuration: duration * 1000 };
       }
       break;
     }
@@ -37,25 +36,22 @@ export default (
       if ("buttonName" in action) {
         switch (action.buttonName.toLowerCase()) {
           case "play":
-            return Immutable(state).setIn(["videoPlaying"], true);
+            return { ...state, videoPlaying: true };
 
           case "pause":
-            return Immutable(state).setIn(["videoPlaying"], false);
+            return { ...state, videoPlaying: false };
         }
       }
       break;
     }
     case "CHANGE_VIDEO_TIME": {
-      return Immutable(state).setIn(["currentVideoTime"], action.newTime);
+      return { ...state, currentVideoTime: action.newTime };
     }
     case "CHANGE_VIDEO_PLAYING": {
-      return Immutable(state).setIn(["videoPlaying"], action.isPlaying);
+      return { ...state, videoPlaying: action.isPlaying };
     }
     case "DELETE_KEYFRAME": {
-      return Immutable(state).setIn(
-        ["keyframes"],
-        Immutable(state.keyframes).without(action.time)
-      );
+      return { ...state, keyframes: removeProperty(state.keyframes, action.time) };
     }
     default:
       break;

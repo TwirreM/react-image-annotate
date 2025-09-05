@@ -5,7 +5,6 @@ import SidebarBoxContainer from "../SidebarBoxContainer";
 import StyleIcon from "@mui/icons-material/Style";
 import { grey } from "@mui/material/colors";
 import useEventCallback from "use-event-callback";
-import Immutable from "seamless-immutable";
 import Select, { MultiValue } from "react-select";
 
 type Props = {
@@ -38,13 +37,11 @@ export const TagsSidebarBox = ({
     [cls]
   );
   const memoImgClsList = useMemo(
-    () =>
-      Immutable.asMutable(imageClsList.map((c) => ({ value: c, label: c }))),
+    () => imageClsList.map((c) => ({ value: c, label: c })),
     [imageClsList]
   );
   const memoImgTagList = useMemo(
-    () =>
-      Immutable.asMutable(imageTagList.map((c) => ({ value: c, label: c }))),
+    () => imageTagList.map((c) => ({ value: c, label: c })),
     [imageTagList]
   );
   const memoCurrentTags = useMemo(
