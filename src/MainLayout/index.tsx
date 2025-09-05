@@ -8,6 +8,7 @@ import {
   MouseEvent,
   MouseEventHandler,
   ReactElement,
+  RefObject,
   useCallback,
   useMemo,
   useRef,
@@ -402,7 +403,7 @@ export const MainLayout = ({
         >
           <HotKeys
             tabIndex={-1}
-            innerRef={innerContainerRef}
+            innerRef={innerContainerRef as RefObject<HTMLElement>}
             onMouseDown={refocusOnMouseEvent}
             onMouseOver={refocusOnMouseEvent}
             allowChanges

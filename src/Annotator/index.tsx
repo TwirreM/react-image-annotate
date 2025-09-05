@@ -166,9 +166,7 @@ export const Annotator = ({
           keyframes,
         }),
   });
-  const [state, dispatchToReducer] = useReducer<
-    (state: MainLayoutState, action: Action) => MainLayoutState
-  >(
+  const [state, dispatchToReducer] = useReducer(
     historyHandler(combinedReducers) as unknown as (
       state: MainLayoutState,
       action: Action
@@ -207,7 +205,7 @@ export const Annotator = ({
       imageIndex: +selectedImage,
       image,
     });
-    // @ts-ignore
+    // @ts-expect-error state.images might be undefined
   }, [selectedImage, state.annotationType, state.images]);
 
   if (!images && !videoSrc)
