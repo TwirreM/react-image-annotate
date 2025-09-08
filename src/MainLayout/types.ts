@@ -9,6 +9,7 @@ import type {
   Polygon,
   Region,
 } from "../types/region-tools.ts";
+// @ts-ignore It complains that there's no types for this, but there is. And only when compiling it from the main project, not from the workspace.
 import { AutosegOptions } from "autoseg/webworker";
 
 export type AnnotatorToolEnum =

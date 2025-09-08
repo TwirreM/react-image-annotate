@@ -196,15 +196,14 @@ export const Annotator = ({
   });
 
   useEffect(() => {
-    if (selectedImage === undefined || state.annotationType !== "image") return;
-    const image = state.images[selectedImage];
+    if (selectedImage === undefined || images == undefined) return;
+    const image = images[selectedImage];
     dispatchToReducer({
       type: "SELECT_IMAGE",
       imageIndex: +selectedImage,
       image,
     });
-    // @ts-expect-error state.images might be undefined
-  }, [selectedImage, state.annotationType, state.images]);
+  }, [selectedImage, images]);
 
   if (!images && !videoSrc)
     return <div>Missing required prop "images" or "videoSrc"</div>;

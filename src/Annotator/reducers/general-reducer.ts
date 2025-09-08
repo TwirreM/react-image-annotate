@@ -99,16 +99,6 @@ export default <T extends MainLayoutState>(
       ) as T;
     }
   };
-  // const unselectRegions = (state: MainLayoutState) => {
-  //   if (!activeImage) return state;
-  //   return Immutable(state).setIn(
-  //     [...pathToActiveImage, "regions"],
-  //     (activeImage.regions || []).map((r) => ({
-  //       ...r,
-  //       highlighted: false,
-  //     }))
-  //   );
-  // };
 
   const closeEditors = (state: MainLayoutState) => {
     if (currentImageIndex === null) {
@@ -125,11 +115,20 @@ export default <T extends MainLayoutState>(
   const setNewImage = (img: string | Image, index: number) => {
     const { frameTime }: Partial<Image> =
       typeof img === "object" ? img : { src: img, frameTime: undefined };
-    return {
-      ...state,
-      selectedImage: index,
-      selectedImageFrameTime: frameTime,
-    };
+    if ("images" in state && index > state.images.length - 1 && typeof img !== "string") {
+      return {
+        ...state,
+        images: [...state.images, img],
+        selectedImage: index,
+        selectedImageFrameTime: frameTime,
+      }
+    } else {
+      return {
+        ...state,
+        selectedImage: index,
+        selectedImageFrameTime: frameTime,
+      };
+    }
   };
   switch (action.type) {
     case "@@INIT": {
