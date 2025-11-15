@@ -1,6 +1,6 @@
 // @flow
 import { Action, Image, MainLayoutState } from "../../MainLayout/types";
-import { ExpandingLine, moveRegion, Region } from "../../types/region-tools.ts";
+import { Box, ExpandingLine, moveRegion, Region } from "../../types/region-tools.ts";
 import isEqual from "lodash/isEqual";
 import getActiveImage from "./get-active-image";
 import { saveToHistory } from "./history-handler";
@@ -163,6 +163,8 @@ export default <T extends MainLayoutState>(
       }
       if (!isEqual(oldRegion?.tags, action.region.tags)) {
         state = saveToHistory(state, "Change Region Tags") as T;
+
+        state = { ...state, selectedTags: action.region.tags };
       }
       if (!isEqual(oldRegion?.comment, action.region.comment)) {
         state = saveToHistory(state, "Change Region Comment") as T;
@@ -720,7 +722,8 @@ export default <T extends MainLayoutState>(
             color: defaultRegionColor,
             cls: defaultRegionCls,
             id: getRandomId(),
-          };
+          } as Box;
+          if (state.selectedTags) newRegion.tags = state.selectedTags;
           state = {
             ...state,
             mode: {

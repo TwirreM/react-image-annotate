@@ -103,6 +103,7 @@ export type MainLayoutStateBase = {
   pointDistancePrecision?: number;
   selectedTool: AnnotatorToolEnum;
   selectedCls?: string;
+  selectedTags?: string[];
   mode: Mode;
   taskDescription: string;
   allowedArea?: { x: number; y: number; w: number; h: number };
