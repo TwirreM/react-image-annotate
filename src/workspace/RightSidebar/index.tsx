@@ -1,18 +1,17 @@
 import { ReactNode, useEffect, useMemo, useReducer } from "react";
-import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
+import { styled, ThemeProvider } from "@mui/material/styles";
 import ButtonBase from "@mui/material/ButtonBase";
 import ExpandIcon from "@mui/icons-material/KeyboardArrowLeft";
 import ContractIcon from "@mui/icons-material/KeyboardArrowRight";
-import { grey } from "@mui/material/colors";
+import { useAppTheme } from "../../Theme";
 
-const theme = createTheme();
-const Container = styled("div")(() => ({
+const Container = styled("div")(({ theme }) => ({
   width: 0,
   display: "flex",
   flexDirection: "column",
   height: "100%",
   flexShrink: 0,
-  backgroundColor: "#fff",
+  backgroundColor: theme.palette.background.paper,
   position: "relative",
   transition: "width 500ms",
   "&.expanded": {
@@ -20,7 +19,7 @@ const Container = styled("div")(() => ({
   },
 }));
 
-const Expander = styled(ButtonBase)(() => ({
+const Expander = styled(ButtonBase)(({ theme }) => ({
   width: 23,
   height: 40,
   display: "flex",
@@ -30,11 +29,11 @@ const Expander = styled(ButtonBase)(() => ({
   borderTopLeftRadius: "50%",
   borderBottomLeftRadius: "50%",
   boxSizing: "border-box",
-  borderTop: `1px solid ${grey[400]}`,
-  borderBottom: `1px solid ${grey[400]}`,
-  borderLeft: `1px solid ${grey[400]}`,
+  borderTop: `1px solid ${theme.palette.divider}`,
+  borderBottom: `1px solid ${theme.palette.divider}`,
+  borderLeft: `1px solid ${theme.palette.divider}`,
   boxShadow: "-1px 2px 5px rgba(0,0,0,0.2)",
-  backgroundColor: "#fff",
+  backgroundColor: theme.palette.background.paper,
   position: "absolute",
   top: "calc(50% - 20px)",
   left: -23,
@@ -92,6 +91,7 @@ export const RightSidebar = ({
   initiallyExpanded,
   height,
 }: RightSidebarProps) => {
+  const theme = useAppTheme();
   const [expanded, toggleExpanded] = useReducer(
     (state) => !state,
     initiallyExpanded === undefined

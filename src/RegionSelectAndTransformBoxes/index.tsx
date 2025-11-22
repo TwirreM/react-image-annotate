@@ -1,6 +1,6 @@
 import { Fragment, memo, MutableRefObject } from "react";
 import HighlightBox from "../HighlightBox";
-import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
+import { styled, ThemeProvider } from "@mui/material/styles";
 import PreventScrollToParents from "../PreventScrollToParents";
 import Tooltip from "@mui/material/Tooltip";
 import {
@@ -14,13 +14,13 @@ import { MouseEvents } from "../ImageCanvas/use-mouse.ts";
 import { ProjectBox, ProjectBoxFn } from "../ImageCanvas/use-project-box.ts";
 import { CanvasLayoutParams } from "../ImageCanvas";
 import { IMatrix } from "transformation-matrix-js";
+import { useAppTheme } from "../Theme";
 
-const theme = createTheme();
-const TransformGrabber = styled("div")(() => ({
+const TransformGrabber = styled("div")(({ theme }) => ({
   width: 8,
   height: 8,
   zIndex: 2,
-  border: "2px solid #FFF",
+  border: `2px solid ${theme.palette.common.white}`,
   position: "absolute",
 }));
 
@@ -79,6 +79,7 @@ export const RegionSelectAndTransformBox = memo(
     onAddPolygonPoint,
     showHighlightBox,
   }: RegionSelectAndTransformBoxProps) => {
+    const theme = useAppTheme();
     const pbox: ProjectBox = projectRegionBox(r);
     const { iw, ih } = layoutParams.current ?? { iw: 0, ih: 0 };
     return (
@@ -199,7 +200,7 @@ export const RegionSelectAndTransformBox = memo(
                         zIndex: 10,
                         left: proj.x - 4,
                         top: proj.y - 4,
-                        border: "2px dotted #fff",
+                        border: `2px dotted ${theme.palette.common.white}`,
                         opacity: 0.5,
                       }}
                     />

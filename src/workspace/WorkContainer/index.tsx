@@ -1,14 +1,13 @@
 import { forwardRef, ReactNode } from "react";
-import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
-import { grey } from "@mui/material/colors";
+import { styled, ThemeProvider } from "@mui/material/styles";
+import { useAppTheme } from "../../Theme";
 
-const theme = createTheme();
-const Container = styled("div")(() => ({
+const Container = styled("div")(({ theme }) => ({
   position: "relative",
   flexGrow: 1,
   flexShrink: 1,
   height: "100%",
-  backgroundColor: grey[50],
+  backgroundColor: theme.palette.background.default,
   overflowY: "auto",
 }));
 const ShadowOverlay = styled("div")(() => ({
@@ -27,6 +26,7 @@ export const WorkContainer = forwardRef<
   HTMLDivElement,
   { children: ReactNode }
 >(({ children }, ref) => {
+  const theme = useAppTheme();
   return (
     <ThemeProvider theme={theme}>
       <Container ref={ref}>

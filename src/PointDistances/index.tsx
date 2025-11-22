@@ -1,12 +1,12 @@
 // @flow weak
 
 import { Fragment } from "react";
-import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
+import { styled, ThemeProvider } from "@mui/material/styles";
 import { ProjectBoxFn } from "../ImageCanvas/use-project-box.ts";
 import { Point, Region } from "../types/region-tools.ts";
+import { useAppTheme } from "../Theme";
 
-const theme = createTheme();
-const Svg = styled("svg")(() => ({
+const Svg = styled("svg")(({ theme }) => ({
   pointerEvents: "none",
   position: "absolute",
   zIndex: 1,
@@ -15,13 +15,13 @@ const Svg = styled("svg")(() => ({
   width: "100%",
   height: "100%",
   "& text": {
-    fill: "#fff",
+    fill: theme.palette.common.white,
   },
   "& path": {
     vectorEffect: "non-scaling-stroke",
     strokeWidth: 2,
     opacity: 0.5,
-    stroke: "#FFF",
+    stroke: theme.palette.common.white,
     fill: "none",
     strokeDasharray: 5,
     animationDuration: "4s",
@@ -45,6 +45,7 @@ export const PointDistances = ({
   realSize,
 }: PointDistancesProps) => {
   const pointsRegions = regions.filter((r) => r.type === "point") as Point[];
+  const theme = useAppTheme();
   return (
     <ThemeProvider theme={theme}>
       <Svg>

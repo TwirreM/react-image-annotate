@@ -2,27 +2,26 @@
 
 import AddLocationIcon from "@mui/icons-material/AddLocation";
 import SidebarBoxContainer from "../SidebarBoxContainer";
-import * as colors from "@mui/material/colors";
 import getTimeString from "../KeyframeTimeline/get-time-string";
 import TrashIcon from "@mui/icons-material/Delete";
 import { styled } from "@mui/material/styles";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import { MainLayoutVideoAnnotationState } from "../MainLayout/types.ts";
+import { useAppTheme } from "../Theme";
 
-const theme = createTheme();
-const KeyframeRow = styled("div")(() => ({
+const KeyframeRow = styled("div")(({ theme }) => ({
   cursor: "pointer",
   display: "flex",
   alignItems: "center",
   padding: 8,
   fontSize: 14,
-  color: colors.grey[700],
+  color: theme.palette.text.primary,
   width: "100%",
   "&.current": {
-    backgroundColor: colors.blue[100],
+    backgroundColor: theme.palette.action.selected,
   },
   "&:hover": {
-    backgroundColor: colors.grey[100],
+    backgroundColor: theme.palette.action.hover,
   },
   "& .time": {
     flexGrow: 1,
@@ -30,16 +29,16 @@ const KeyframeRow = styled("div")(() => ({
     "& .regionCount": {
       marginLeft: 8,
       fontWeight: "normal",
-      color: colors.grey[500],
+      color: theme.palette.text.secondary,
     },
   },
   "& .trash": {
     "& .icon": {
       fontSize: 18,
-      color: colors.grey[600],
+      color: theme.palette.text.secondary,
       transition: "transform 80ms",
       "&:hover": {
-        color: colors.grey[800],
+        color: theme.palette.text.primary,
         transform: "scale(1.25,1.25)",
       },
     },
@@ -59,12 +58,15 @@ const KeyframesSelectorSidebarBox = ({
   onDeleteKeyframe,
 }: KeyframesSelectorSidebarBoxProps) => {
   const keyframeTimes = Object.keys(keyframes).map((t) => parseInt(t));
+  const theme = useAppTheme();
 
   return (
     <ThemeProvider theme={theme}>
       <SidebarBoxContainer
         title="Keyframes"
-        icon={<AddLocationIcon style={{ color: colors.grey[700] }} />}
+        icon={
+          <AddLocationIcon style={{ color: theme.palette.text.primary }} />
+        }
         expandedByDefault
       >
         {keyframeTimes.map((t) => (

@@ -1,18 +1,18 @@
-import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
+import { styled, ThemeProvider } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import { iconMapping } from "../icon-mapping.ts";
 import { useIconDictionary } from "../icon-dictionary.ts";
 import Tooltip from "@mui/material/Tooltip";
 import { AnnotatorToolEnum } from "../../MainLayout/types.ts";
 import { IconSidebarItem } from "../../types/common.ts";
+import { useAppTheme } from "../../Theme";
 
-const theme = createTheme();
-const Container = styled("div")(() => ({
+const Container = styled("div")(({ theme }) => ({
   width: 50,
   height: "100%",
   display: "flex",
   flexDirection: "column",
-  backgroundColor: "#fff",
+  backgroundColor: theme.palette.background.paper,
   flexShrink: 0,
 }));
 
@@ -28,6 +28,7 @@ export const IconSidebar = ({
   selectedTools = [],
 }: IconSidebarProps) => {
   const customIconMapping = useIconDictionary();
+  const theme = useAppTheme();
   return (
     <ThemeProvider theme={theme}>
       <Container>

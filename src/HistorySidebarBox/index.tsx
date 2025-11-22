@@ -1,7 +1,7 @@
 // @flow
 
 import { memo } from "react";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import SidebarBoxContainer from "../SidebarBoxContainer";
 import HistoryIcon from "@mui/icons-material/History";
 import List from "@mui/material/List";
@@ -11,20 +11,19 @@ import IconButton from "@mui/material/IconButton";
 import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import UndoIcon from "@mui/icons-material/Undo";
 import moment from "moment";
-import { grey } from "@mui/material/colors";
 import isEqual from "lodash/isEqual";
 import { tss } from "tss-react/mui";
+import { useAppTheme } from "../Theme";
 
-const theme = createTheme();
-const useStyles = tss.create({
+const useStyles = tss.create(({ theme }) => ({
   emptyText: {
     fontSize: 14,
     fontWeight: "bold",
-    color: grey[500],
+    color: theme.palette.text.secondary,
     textAlign: "center",
     padding: 20,
   },
-});
+}));
 
 const listItemTextStyle = { paddingLeft: 16 };
 
@@ -35,13 +34,14 @@ export const HistorySidebarBox = ({
   history: Array<{ name: string; time: Date }>;
   onRestoreHistory: () => void;
 }) => {
+  const theme = useAppTheme();
   const { classes } = useStyles();
 
   return (
     <ThemeProvider theme={theme}>
       <SidebarBoxContainer
         title="History"
-        icon={<HistoryIcon style={{ color: grey[700] }} />}
+        icon={<HistoryIcon style={{ color: theme.palette.text.primary }} />}
         expandedByDefault
       >
         <List>

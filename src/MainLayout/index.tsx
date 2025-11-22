@@ -13,7 +13,7 @@ import {
   useMemo,
   useRef,
 } from "react";
-import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
+import { styled, ThemeProvider } from "@mui/material/styles";
 
 import ClassSelectionMenu from "../ClassSelectionMenu";
 import DebugBox from "../DebugSidebarBox";
@@ -33,25 +33,25 @@ import useImpliedVideoRegions from "./use-implied-video-regions";
 import { useKey } from "../utils/use-key-hook";
 import { useSettings } from "../SettingsProvider";
 import { HotKeys } from "react-hotkeys";
-import { grey } from "@mui/material/colors";
 import { notEmpty } from "../utils/not-empty.ts";
 import { ALL_TOOLS } from "./all-tools-list.ts";
 import Workspace from "../workspace/Workspace";
 import { tss } from "tss-react/mui";
 import { RegionLabelProps } from "../RegionLabel";
 import SettingsDialog from "../SettingsDialog";
+import { useAppTheme } from "../Theme";
 
 // import Fullscreen from "../Fullscreen"
 
-const theme = createTheme();
-const useStyles = tss.create({
+const useStyles = tss.create(({ theme }) => ({
   container: {
     display: "flex",
     flexGrow: 1,
     flexDirection: "column",
     height: "100dvh",
     maxHeight: "100vh",
-    backgroundColor: "#fff",
+    backgroundColor: theme.palette.background.default,
+    color: theme.palette.text.primary,
     overflow: "hidden",
     "&.fullscreen": {
       position: "absolute",
@@ -64,10 +64,10 @@ const useStyles = tss.create({
   },
   headerTitle: {
     fontWeight: "bold",
-    color: grey[700],
+    color: theme.palette.text.primary,
     paddingLeft: 16,
   },
-});
+}));
 
 const FullScreenContainer = styled("div")(() => ({
   width: "100%",
@@ -114,6 +114,7 @@ export const MainLayout = ({
 }: Props) => {
   const { classes } = useStyles();
   const settings = useSettings();
+  const theme = useAppTheme();
   const fullScreenHandle = useFullScreenHandle();
 
   const memoizedActionFns = useRef<Record<string, (...args: any[]) => void>>(

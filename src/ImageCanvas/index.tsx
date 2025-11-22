@@ -19,7 +19,7 @@ import type {
   Polygon,
   Region,
 } from "../types/region-tools.ts";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import PreventScrollToParents from "../PreventScrollToParents";
 import useWindowSize from "../hooks/use-window-size.tsx";
 import useMouse from "./use-mouse";
@@ -38,16 +38,16 @@ import useWasdMode from "./use-wasd-mode";
 import { ImagePosition } from "../types/common.ts";
 import { AutosegOptions } from "autoseg/webworker";
 import { tss } from "tss-react/mui";
+import { useAppTheme } from "../Theme";
 
-const theme = createTheme();
-const useStyles = tss.create({
+const useStyles = tss.create(({ theme }) => ({
   canvas: { width: "100%", height: "100%", position: "relative", zIndex: 1 },
   zoomIndicator: {
     position: "absolute",
     bottom: 16,
     right: 0,
     backgroundColor: "rgba(0,0,0,0.4)",
-    color: "#fff",
+    color: theme.palette.common.white,
     opacity: 0.5,
     fontWeight: "bolder",
     fontSize: 14,
@@ -64,7 +64,7 @@ const useStyles = tss.create({
       opacity: 1,
     },
   },
-});
+}));
 
 type Props = {
   regions: Array<Region>;
@@ -191,6 +191,7 @@ export const ImageCanvas = ({
   keypointDefinitions,
   allowComments,
 }: Props) => {
+  const theme = useAppTheme();
   const { classes } = useStyles();
   const canvasEl = useRef<HTMLCanvasElement | null>(null);
   const layoutParams = useRef<CanvasLayoutParams | null>(null);
@@ -483,7 +484,7 @@ export const ImageCanvas = ({
             style={{
               position: "absolute",
               zIndex: 1,
-              border: "1px solid #fff",
+              border: `1px solid ${theme.palette.common.white}`,
               pointerEvents: "none",
               left: zoomBox.x,
               top: zoomBox.y,

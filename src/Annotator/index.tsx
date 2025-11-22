@@ -11,6 +11,7 @@ import { ComponentType, FunctionComponent, useEffect, useReducer } from "react";
 
 import type { KeypointsDefinition } from "../types/region-tools.ts";
 import MainLayout from "../MainLayout";
+import Theme from "../Theme";
 import SettingsProvider from "../SettingsProvider";
 import combineReducers from "./reducers/combine-reducers";
 import generalReducer from "./reducers/general-reducer";
@@ -209,24 +210,26 @@ export const Annotator = ({
     return <div>Missing required prop "images" or "videoSrc"</div>;
 
   return (
-    <SettingsProvider>
-      <MainLayout
-        RegionEditLabel={RegionEditLabel}
-        alwaysShowNextButton={Boolean(onNextImage)}
-        alwaysShowPrevButton={Boolean(onPrevImage)}
-        state={state}
-        dispatch={dispatch}
-        onRegionClassAdded={onRegionClassAdded}
-        hideHeader={hideHeader}
-        hideHeaderText={hideHeaderText}
-        hideNext={hideNext}
-        hidePrev={hidePrev}
-        hideClone={hideClone}
-        hideSettings={hideSettings}
-        hideFullScreen={hideFullScreen}
-        hideSave={hideSave}
-      />
-    </SettingsProvider>
+    <Theme>
+      <SettingsProvider>
+        <MainLayout
+          RegionEditLabel={RegionEditLabel}
+          alwaysShowNextButton={Boolean(onNextImage)}
+          alwaysShowPrevButton={Boolean(onPrevImage)}
+          state={state}
+          dispatch={dispatch}
+          onRegionClassAdded={onRegionClassAdded}
+          hideHeader={hideHeader}
+          hideHeaderText={hideHeaderText}
+          hideNext={hideNext}
+          hidePrev={hidePrev}
+          hideClone={hideClone}
+          hideSettings={hideSettings}
+          hideFullScreen={hideFullScreen}
+          hideSave={hideSave}
+        />
+      </SettingsProvider>
+    </Theme>
   );
 };
 

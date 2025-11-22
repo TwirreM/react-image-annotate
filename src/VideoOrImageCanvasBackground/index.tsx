@@ -1,13 +1,13 @@
 // @flow weak
 
 import { CSSProperties, useEffect, useMemo, useRef, useState } from "react";
-import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
+import { styled, ThemeProvider } from "@mui/material/styles";
 import useEventCallback from "use-event-callback";
 import { useSettings } from "../SettingsProvider";
 import { ImagePosition } from "../types/common.ts";
 import { MouseEvents } from "../ImageCanvas/use-mouse.ts";
+import { useAppTheme } from "../Theme";
 
-const theme = createTheme();
 const Video = styled("video")(() => ({
   zIndex: 0,
   position: "absolute",
@@ -62,6 +62,7 @@ export default ({
   onChangeVideoPlaying,
 }: Props) => {
   const settings = useSettings();
+  const theme = useAppTheme();
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
   const [error, setError] = useState<string | null>(null);

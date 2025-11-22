@@ -1,15 +1,14 @@
 import { useEffect } from "react";
-import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
+import { styled, ThemeProvider } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import * as muiColors from "@mui/material/colors";
 import SidebarBoxContainer from "../SidebarBoxContainer";
 import colors from "../colors";
 import BallotIcon from "@mui/icons-material/Ballot";
 import capitalize from "lodash/capitalize";
 import classnames from "classnames";
+import { useAppTheme } from "../Theme";
 
-const theme = createTheme();
-const LabelContainer = styled("div")(() => ({
+const LabelContainer = styled("div")(({ theme }) => ({
   display: "flex",
   paddingTop: 4,
   paddingBottom: 4,
@@ -18,7 +17,8 @@ const LabelContainer = styled("div")(() => ({
   alignItems: "center",
   cursor: "pointer",
   opacity: 0.7,
-  backgroundColor: "#fff",
+  backgroundColor: theme.palette.background.paper,
+  color: theme.palette.text.primary,
   "&:hover": {
     opacity: 1,
   },
@@ -36,20 +36,20 @@ const Circle = styled("div")(() => ({
 const Label = styled("div")(() => ({
   fontSize: 11,
 }));
-const DashSep = styled("div")(() => ({
+const DashSep = styled("div")(({ theme }) => ({
   flexGrow: 1,
-  borderBottom: `2px dotted ${muiColors.grey[300]}`,
+  borderBottom: `2px dotted ${theme.palette.divider}`,
   marginLeft: 8,
   marginRight: 8,
 }));
-const Number = styled("div")(() => ({
+const Number = styled("div")(({ theme }) => ({
   fontSize: 11,
   textAlign: "center",
   minWidth: 14,
   paddingTop: 2,
   paddingBottom: 2,
   fontWeight: "bold",
-  color: muiColors.grey[700],
+  color: theme.palette.text.secondary,
 }));
 
 const getRegionValue = (item: string | { id: string; label: string }) => {
@@ -67,6 +67,7 @@ export const ClassSelectionMenu = ({
   regionClsList,
   onSelectCls,
 }: ClassSelectionMenuProps) => {
+  const theme = useAppTheme();
   useEffect(() => {
     const keyMapping: Record<
       string,
@@ -93,7 +94,7 @@ export const ClassSelectionMenu = ({
     <ThemeProvider theme={theme}>
       <SidebarBoxContainer
         title="Classifications"
-        icon={<BallotIcon style={{ color: muiColors.grey[700] }} />}
+        icon={<BallotIcon style={{ color: theme.palette.text.primary }} />}
         expandedByDefault
       >
         {regionClsList.map((item, index) => (

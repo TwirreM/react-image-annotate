@@ -1,14 +1,13 @@
 // @flow
 
 import Button from "@mui/material/Button";
-import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
+import { styled, ThemeProvider } from "@mui/material/styles";
 import { useIconDictionary } from "../icon-dictionary.ts";
 import { iconMapping } from "../icon-mapping.ts";
-import { colors, SvgIconTypeMap } from "@mui/material";
+import { SvgIconTypeMap } from "@mui/material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 import { ReactNode } from "react";
-
-const theme = createTheme();
+import { useAppTheme } from "../../Theme";
 const defaultNameIconMapping = iconMapping;
 
 const getIcon = (
@@ -35,8 +34,8 @@ const ButtonInnerContent = styled("div")(() => ({
   flexDirection: "column",
 }));
 const IconContainer = styled("div")(
-  ({ textHidden }: { textHidden: boolean }) => ({
-    color: colors.grey[700],
+  ({ theme, textHidden }: { theme?: any; textHidden: boolean }) => ({
+    color: theme.palette.text.secondary,
     height: textHidden ? 32 : 20,
     paddingTop: textHidden ? 8 : 0,
     "& .MuiSvgIcon-root": {
@@ -45,10 +44,10 @@ const IconContainer = styled("div")(
     },
   })
 );
-const Text = styled("div")(() => ({
+const Text = styled("div")(({ theme }) => ({
   fontWeight: "bold",
   fontSize: 11,
-  color: colors.grey[800],
+  color: theme.palette.text.primary,
   display: "flex",
   alignItems: "center",
   lineHeight: 1,
@@ -71,6 +70,7 @@ export const HeaderButton = ({
   hideText = false,
 }: HeaderButtonProps) => {
   const customIconMapping = useIconDictionary();
+  const theme = useAppTheme();
   return (
     <ThemeProvider key={name} theme={theme}>
       <StyledButton onClick={onClick} disabled={disabled}>

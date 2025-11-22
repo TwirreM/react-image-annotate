@@ -6,6 +6,7 @@ import StyleIcon from "@mui/icons-material/Style";
 import { grey } from "@mui/material/colors";
 import useEventCallback from "use-event-callback";
 import Select, { MultiValue } from "react-select";
+import { useAppTheme } from "../Theme";
 
 type Props = {
   currentImage: { cls?: string; tags?: Array<string> } | null;
@@ -24,6 +25,7 @@ export const TagsSidebarBox = ({
   imageTagList = emptyArr,
   onChangeImage = noop,
 }: Props) => {
+  const theme = useAppTheme();
   const { tags = [], cls = null } = currentImage || {};
   const onChangeClassification = useEventCallback((o) =>
     onChangeImage({ cls: o.value })
@@ -62,6 +64,31 @@ export const TagsSidebarBox = ({
         <div style={{ padding: 8 }}>
           <Select
             placeholder="Image Classification"
+            styles={{
+              menu: (base) => ({
+                ...base,
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+              }),
+              control: (base) => ({
+                ...base,
+                backgroundColor: theme.palette.background.paper,
+                borderColor: theme.palette.divider,
+              }),
+              singleValue: (base) => ({
+                ...base,
+                color: theme.palette.text.primary,
+              }),
+              option: (base, state) => ({
+                ...base,
+                backgroundColor: state.isFocused
+                  ? theme.palette.action.hover
+                  : state.isSelected
+                  ? theme.palette.action.selected
+                  : theme.palette.background.paper,
+                color: theme.palette.text.primary,
+              }),
+            }}
             onChange={onChangeClassification}
             value={selectValue}
             options={memoImgClsList}
@@ -73,6 +100,35 @@ export const TagsSidebarBox = ({
           <Select
             isMulti
             placeholder="Image Tags"
+            styles={{
+              menu: (base) => ({
+                ...base,
+                backgroundColor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+              }),
+              control: (base) => ({
+                ...base,
+                backgroundColor: theme.palette.background.paper,
+                borderColor: theme.palette.divider,
+              }),
+              multiValue: (base) => ({
+                ...base,
+                backgroundColor: theme.palette.action.selected,
+              }),
+              multiValueLabel: (base) => ({
+                ...base,
+                color: theme.palette.text.primary,
+              }),
+              option: (base, state) => ({
+                ...base,
+                backgroundColor: state.isFocused
+                  ? theme.palette.action.hover
+                  : state.isSelected
+                  ? theme.palette.action.selected
+                  : theme.palette.background.paper,
+                color: theme.palette.text.primary,
+              }),
+            }}
             onChange={onChangeTags}
             value={memoCurrentTags}
             options={memoImgTagList}

@@ -1,5 +1,5 @@
 import { CSSProperties, ReactElement } from "react";
-import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
+import { styled, ThemeProvider } from "@mui/material/styles";
 import Header from "../Header";
 import RightSidebar from "../RightSidebar";
 import WorkContainer from "../WorkContainer";
@@ -9,8 +9,7 @@ import IconSidebar from "../IconSidebar";
 import { AnnotatorToolEnum } from "../../MainLayout/types.ts";
 import { SvgIconTypeMap } from "@mui/material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
-
-const theme = createTheme();
+import { useAppTheme } from "../../Theme";
 
 const Container = styled("div")(() => ({
   display: "flex",
@@ -50,7 +49,7 @@ export interface WorkspaceProps {
   children: ReactElement;
 }
 
-export default ({
+export default function Workspace({
   style = {},
   iconSidebarItems = [],
   selectedTools = ["select"],
@@ -64,7 +63,8 @@ export default ({
   hideHeader = false,
   hideHeaderText = false,
   children,
-}: WorkspaceProps) => {
+}: WorkspaceProps) {
+  const theme = useAppTheme();
   const [sidebarAndContentRef, sidebarAndContent] =
     useMeasure<HTMLDivElement>();
   return (

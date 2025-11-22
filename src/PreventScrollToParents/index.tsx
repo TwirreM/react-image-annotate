@@ -2,10 +2,10 @@
 
 import { ReactNode, useState } from "react";
 import { RemoveScroll } from "react-remove-scroll";
-import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
+import { styled, ThemeProvider } from "@mui/material/styles";
 import useEventCallback from "use-event-callback";
+import { useAppTheme } from "../Theme";
 
-const theme = createTheme();
 const Container = styled("div")(() => ({
   "& > div": {
     width: "100%",
@@ -23,6 +23,7 @@ export const PreventScrollToParents = ({
   children,
   ...otherProps
 }: PreventScrollToParentsProps) => {
+  const theme = useAppTheme();
   const [mouseOver, changeMouseOver] = useState(false);
   const onMouseMove = useEventCallback((e) => {
     if (!mouseOver) changeMouseOver(true);

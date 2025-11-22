@@ -7,6 +7,7 @@ import { Region } from "../types/region-tools.ts";
 import { ProjectBox, ProjectBoxFn } from "../ImageCanvas/use-project-box.ts";
 import { MouseEvents } from "../ImageCanvas/use-mouse.ts";
 import { ComponentType, FunctionComponent } from "react";
+import { useAppTheme } from "../Theme";
 
 const copyWithout = <T extends object, K extends keyof T>(
   obj: T,
@@ -52,6 +53,7 @@ export const RegionTags = ({
   onRegionClassAdded,
   allowComments,
 }: RegionTagsProps) => {
+  const theme = useAppTheme();
   const RegionLabel =
     RegionEditLabel != null ? RegionEditLabel : DefaultRegionLabel;
   return regions
@@ -86,7 +88,7 @@ export const RegionTags = ({
                 left: 0,
                 ...(displayOnTop ? { bottom: 0 } : { top: 0 }),
                 zIndex: 10,
-                backgroundColor: "#fff",
+                backgroundColor: theme.palette.background.paper,
                 borderRadius: 4,
                 padding: 2,
                 paddingBottom: 0,
@@ -94,7 +96,13 @@ export const RegionTags = ({
                 pointerEvents: "none",
               }}
             >
-              <LockIcon style={{ width: 16, height: 16, color: "#333" }} />
+              <LockIcon
+                style={{
+                  width: 16,
+                  height: 16,
+                  color: theme.palette.text.primary,
+                }}
+              />
             </Paper>
           </div>
         );

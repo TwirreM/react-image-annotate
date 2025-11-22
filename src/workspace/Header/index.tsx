@@ -1,15 +1,14 @@
 import HeaderButton from "../HeaderButton/index.js";
 import Box from "@mui/material/Box";
-import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
+import { styled, ThemeProvider } from "@mui/material/styles";
 import { ReactNode } from "react";
+import { useAppTheme } from "../../Theme";
 
-const theme = createTheme();
-
-const Container = styled("div")(() => ({
+const Container = styled("div")(({ theme }) => ({
   width: "100%",
   display: "flex",
-  backgroundColor: "#fff",
-  borderBottom: "1px solid #ccc",
+  backgroundColor: theme.palette.background.paper,
+  borderBottom: `1px solid ${theme.palette.divider}`,
   alignItems: "center",
   flexShrink: 1,
   boxSizing: "border-box",
@@ -28,6 +27,7 @@ export const Header = ({
   items,
   onClickItem,
 }: HeaderProps) => {
+  const theme = useAppTheme();
   return (
     <ThemeProvider theme={theme}>
       <Container>

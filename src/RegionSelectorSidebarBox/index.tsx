@@ -2,8 +2,7 @@
 
 import { memo, ReactNode } from "react";
 import SidebarBoxContainer from "../SidebarBoxContainer";
-import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
-import { blue, grey } from "@mui/material/colors";
+import { styled, ThemeProvider } from "@mui/material/styles";
 import RegionIcon from "@mui/icons-material/PictureInPicture";
 import Grid from "@mui/material/Grid";
 import ReorderIcon from "@mui/icons-material/SwapVert";
@@ -17,13 +16,13 @@ import isEqual from "lodash/isEqual";
 import { Region } from "../types/region-tools.ts";
 import { tss } from "tss-react/mui";
 import { RegionAllowedActions } from "../MainLayout/types.ts";
+import { useAppTheme } from "../Theme";
 
-const theme = createTheme();
-const useStyles = tss.create({
+const useStyles = tss.create(({ theme }) => ({
   container: {
     fontSize: 11,
     fontWeight: "bold",
-    color: grey[700],
+    color: theme.palette.text.secondary,
     "& .icon": {
       marginTop: 4,
       width: 16,
@@ -44,14 +43,14 @@ const useStyles = tss.create({
     padding: 4,
     cursor: "pointer",
     "&.header:hover": {
-      backgroundColor: "#fff",
+      backgroundColor: theme.palette.background.paper,
     },
     "&.highlighted": {
-      backgroundColor: blue[100],
+      backgroundColor: theme.palette.action.selected,
     },
     "&:hover": {
-      backgroundColor: blue[50],
-      color: grey[800],
+      backgroundColor: theme.palette.action.hover,
+      color: theme.palette.text.primary,
     },
   },
   chip: {
@@ -71,10 +70,10 @@ const useStyles = tss.create({
     },
     "& .text": {},
   },
-});
+}));
 
-const HeaderSep = styled("div")(() => ({
-  borderTop: `1px solid ${grey[200]}`,
+const HeaderSep = styled("div")(({ theme }) => ({
+  borderTop: `1px solid ${theme.palette.divider}`,
   marginTop: 2,
   marginBottom: 2,
 }));
@@ -278,12 +277,13 @@ export const RegionSelectorSidebarBox = ({
   onSelectRegion,
   regionAllowedActions,
 }: RegionSelectorSidebarBoxProps) => {
+  const theme = useAppTheme();
   const { classes } = useStyles();
   return (
     <ThemeProvider theme={theme}>
       <SidebarBoxContainer
         title="Regions"
-        icon={<RegionIcon style={{ color: grey[700] }} />}
+        icon={<RegionIcon style={{ color: theme.palette.text.primary }} />}
         expandedByDefault
       >
         <div className={classes.container}>

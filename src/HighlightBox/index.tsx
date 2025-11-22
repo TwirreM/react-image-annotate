@@ -1,13 +1,13 @@
 // @flow
 
 import classnames from "classnames";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import type { Point, Region } from "../types/region-tools.ts";
 import { MouseEvents } from "../ImageCanvas/use-mouse.ts";
 import { tss } from "tss-react/mui";
+import { useAppTheme } from "../Theme";
 
-const theme = createTheme();
-const useStyles = tss.create(() => ({
+const useStyles = tss.create(({ theme }) => ({
   "@keyframes borderDance": {
     from: { strokeDashoffset: 0 },
     to: { strokeDashoffset: 100 },
@@ -27,7 +27,7 @@ const useStyles = tss.create(() => ({
     "& path": {
       vectorEffect: "non-scaling-stroke",
       strokeWidth: 2,
-      stroke: "#FFF",
+      stroke: theme.palette.common.white,
       fill: "none",
       strokeDasharray: 5,
       animationName: "$borderDance",
@@ -58,6 +58,7 @@ export const HighlightBox = ({
   region: Region;
   pbox: { x: number; y: number; w: number; h: number };
 }) => {
+  const theme = useAppTheme();
   const { classes } = useStyles();
   if (!pbox.w || pbox.w === Infinity) return null;
   if (!pbox.h || pbox.h === Infinity) return null;

@@ -1,16 +1,14 @@
 // @flow weak
 
 import { useEffect, useMemo, useState } from "react";
-import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
+import { styled, ThemeProvider } from "@mui/material/styles";
 import range from "lodash/range";
-import * as colors from "@mui/material/colors";
 import useMeasure from "react-use-measure";
 import useEventCallback from "use-event-callback";
 import { useRafState } from "react-use";
 import getTimeString from "./get-time-string";
 import { MainLayoutVideoAnnotationState } from "../MainLayout/types.ts";
-
-const theme = createTheme();
+import { useAppTheme } from "../Theme";
 
 const Container = styled("div")(() => ({
   position: "relative",
@@ -22,36 +20,36 @@ const Container = styled("div")(() => ({
   marginRight: 16,
 }));
 
-const Tick = styled("div")(() => ({
+const Tick = styled("div")(({ theme }) => ({
   position: "absolute",
   width: 2,
   marginLeft: -1,
   height: "100%",
-  backgroundColor: colors.grey[300],
+  backgroundColor: theme.palette.divider,
   bottom: 0,
 }));
-const TickText = styled("div")(() => ({
+const TickText = styled("div")(({ theme }) => ({
   position: "absolute",
   userSelect: "none",
   fontSize: 10,
-  color: colors.grey[600],
+  color: theme.palette.text.secondary,
   fontWeight: "bold",
   bottom: 0,
 }));
 
-const PositionCursor = styled("div")(() => ({
+const PositionCursor = styled("div")(({ theme }) => ({
   position: "absolute",
   bottom: "calc(50% + 6px)",
   fontSize: 10,
   fontWeight: "bold",
-  color: "#fff",
+  color: theme.palette.primary.contrastText,
   display: "grid",
   placeItems: "center",
   width: 48,
   marginLeft: -24,
   borderRadius: 2,
   height: 24,
-  backgroundColor: colors.blue[500],
+  backgroundColor: theme.palette.primary.main,
   userSelect: "none",
   fontVariantNumeric: "tabular-nums",
 
@@ -62,20 +60,20 @@ const PositionCursor = styled("div")(() => ({
     content: '""',
     width: 0,
     height: 0,
-    borderTop: `8px solid ${colors.blue[500]}`,
+    borderTop: `8px solid ${theme.palette.primary.main}`,
     borderLeft: "8px solid transparent",
     borderRight: "8px solid transparent",
   },
 }));
 
-const KeyframeMarker = styled("div")(() => ({
+const KeyframeMarker = styled("div")(({ theme }) => ({
   position: "absolute",
   bottom: 8,
   cursor: "pointer",
   opacity: 0.75,
   fontSize: 10,
   fontWeight: "bold",
-  color: "#fff",
+  color: theme.palette.error.contrastText,
   display: "grid",
   placeItems: "center",
   width: 16,
@@ -83,7 +81,7 @@ const KeyframeMarker = styled("div")(() => ({
   borderTopRightRadius: 2,
   height: 12,
   marginLeft: -8,
-  backgroundColor: colors.red[500],
+  backgroundColor: theme.palette.error.main,
   userSelect: "none",
   fontVariantNumeric: "tabular-nums",
 
@@ -94,7 +92,7 @@ const KeyframeMarker = styled("div")(() => ({
     content: '""',
     width: 0,
     height: 0,
-    borderTop: `8px solid ${colors.red[500]}`,
+    borderTop: `8px solid ${theme.palette.error.main}`,
     borderLeft: "8px solid transparent",
     borderRight: "8px solid transparent",
   },
@@ -138,6 +136,7 @@ export default ({
   onChangeCurrentTime,
   keyframes,
 }: KeyframeTimelineProps) => {
+  const theme = useAppTheme();
   const [ref, bounds] = useMeasure();
   const [instantCurrentTime, changeInstantCurrentTime] = useState(currentTime);
   const [draggingTime, changeDraggingTime] = useRafState(false);

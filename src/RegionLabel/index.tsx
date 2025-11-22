@@ -2,7 +2,7 @@
 
 import { memo, useRef } from "react";
 import Paper from "@mui/material/Paper";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import classnames from "classnames";
 import type { Region } from "../types/region-tools.ts";
 import IconButton from "@mui/material/IconButton";
@@ -14,10 +14,9 @@ import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
 
 import { tss } from "tss-react/mui";
-import { grey } from "@mui/material/colors";
+import { useAppTheme } from "../Theme";
 
-const theme = createTheme();
-const useStyles = tss.create({
+const useStyles = tss.create(({ theme }) => ({
   regionInfo: {
     fontSize: 12,
     cursor: "default",
@@ -35,7 +34,7 @@ const useStyles = tss.create({
     },
     // pointerEvents: "none",
     fontWeight: 600,
-    color: grey[900],
+    color: theme.palette.text.primary,
     padding: 8,
     "& .name": {
       display: "flex",
@@ -51,7 +50,7 @@ const useStyles = tss.create({
     },
     "& .tags": {
       "& .tag": {
-        color: grey[700],
+        color: theme.palette.text.secondary,
         display: "inline-block",
         margin: 1,
         fontSize: 10,
@@ -63,7 +62,7 @@ const useStyles = tss.create({
     fontWeight: 400,
     fontSize: 13,
   },
-});
+}));
 
 export type RegionLabelProps = {
   region: Region;
@@ -94,6 +93,7 @@ export const RegionLabel = ({
   onRegionClassAdded,
   allowComments,
 }: RegionLabelProps) => {
+  const theme = useAppTheme();
   const { classes } = useStyles();
   const commentInputRef = useRef<HTMLDivElement | null>(null);
   const onCommentInputClick = () => {
@@ -181,6 +181,31 @@ export const RegionLabel = ({
                 {isCreatableAllowedClasses ? (
                   <CreatableSelect
                     placeholder="Classification"
+                    styles={{
+                      menu: (base) => ({
+                        ...base,
+                        backgroundColor: theme.palette.background.paper,
+                        color: theme.palette.text.primary,
+                      }),
+                      control: (base) => ({
+                        ...base,
+                        backgroundColor: theme.palette.background.paper,
+                        borderColor: theme.palette.divider,
+                      }),
+                      singleValue: (base) => ({
+                        ...base,
+                        color: theme.palette.text.primary,
+                      }),
+                      option: (base, state) => ({
+                        ...base,
+                        backgroundColor: state.isFocused
+                          ? theme.palette.action.hover
+                          : state.isSelected
+                          ? theme.palette.action.selected
+                          : theme.palette.background.paper,
+                        color: theme.palette.text.primary,
+                      }),
+                    }}
                     onChange={(o, actionMeta) => {
                       if (!o) return;
                       if (
@@ -205,6 +230,31 @@ export const RegionLabel = ({
                 ) : (
                   <Select
                     placeholder="Classification"
+                    styles={{
+                      menu: (base) => ({
+                        ...base,
+                        backgroundColor: theme.palette.background.paper,
+                        color: theme.palette.text.primary,
+                      }),
+                      control: (base) => ({
+                        ...base,
+                        backgroundColor: theme.palette.background.paper,
+                        borderColor: theme.palette.divider,
+                      }),
+                      singleValue: (base) => ({
+                        ...base,
+                        color: theme.palette.text.primary,
+                      }),
+                      option: (base, state) => ({
+                        ...base,
+                        backgroundColor: state.isFocused
+                          ? theme.palette.action.hover
+                          : state.isSelected
+                          ? theme.palette.action.selected
+                          : theme.palette.background.paper,
+                        color: theme.palette.text.primary,
+                      }),
+                    }}
                     onChange={(o) => {
                       if (!o) return;
                       onChange({
@@ -226,6 +276,35 @@ export const RegionLabel = ({
             {(allowedTags || []).length > 0 && (
               <div style={{ marginTop: 4 }}>
                 <Select
+                  styles={{
+                    menu: (base) => ({
+                      ...base,
+                      backgroundColor: theme.palette.background.paper,
+                      color: theme.palette.text.primary,
+                    }),
+                    control: (base) => ({
+                      ...base,
+                      backgroundColor: theme.palette.background.paper,
+                      borderColor: theme.palette.divider,
+                    }),
+                    multiValue: (base) => ({
+                      ...base,
+                      backgroundColor: theme.palette.action.selected,
+                    }),
+                    multiValueLabel: (base) => ({
+                      ...base,
+                      color: theme.palette.text.primary,
+                    }),
+                    option: (base, state) => ({
+                      ...base,
+                      backgroundColor: state.isFocused
+                        ? theme.palette.action.hover
+                        : state.isSelected
+                        ? theme.palette.action.selected
+                        : theme.palette.background.paper,
+                      color: theme.palette.text.primary,
+                    }),
+                  }}
                   onChange={(newTags) => {
                     if (Array.isArray(newTags)) {
                       onChange({

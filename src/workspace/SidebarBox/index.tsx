@@ -1,22 +1,21 @@
 // @flow
 
 import { memo, ReactNode, useCallback, useState } from "react";
-import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
+import { styled, ThemeProvider } from "@mui/material/styles";
 import ExpandIcon from "@mui/icons-material/ExpandMore";
 import IconButton from "@mui/material/IconButton";
 import Collapse from "@mui/material/Collapse";
 import useEventCallback from "use-event-callback";
 import Typography from "@mui/material/Typography";
 import { useIconDictionary } from "../icon-dictionary.ts";
-import { grey } from "@mui/material/colors";
 import classnames from "classnames";
+import { useAppTheme } from "../../Theme";
 
-const theme = createTheme();
-const ContainerDiv = styled("div")(() => ({
-  borderBottom: `2px solid ${grey[400]}`,
-  "&:firstChild": { borderTop: `1px solid ${grey[400]}` },
+const ContainerDiv = styled("div")(({ theme }) => ({
+  borderBottom: `2px solid ${theme.palette.divider}`,
+  "&:firstChild": { borderTop: `1px solid ${theme.palette.divider}` },
 }));
-const HeaderDiv = styled("div")(() => ({
+const HeaderDiv = styled("div")(({ theme }) => ({
   display: "flex",
   flexDirection: "row",
   alignItems: "center",
@@ -24,7 +23,7 @@ const HeaderDiv = styled("div")(() => ({
   paddingLeft: 16,
   paddingRight: 12,
   "& .iconContainer": {
-    color: grey[600],
+    color: theme.palette.text.secondary,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -34,22 +33,23 @@ const HeaderDiv = styled("div")(() => ({
     },
   },
 }));
-const ContentDiv = styled("div")(() => ({
+const ContentDiv = styled("div")(({ theme }) => ({
   maxHeight: 200,
   overflowY: "auto",
+  color: theme.palette.text.primary,
   "&.noScroll": {
     overflowY: "visible",
     overflow: "visible",
   },
 }));
-const TitleTypography = styled(Typography)(() => ({
+const TitleTypography = styled(Typography)(({ theme }) => ({
   fontSize: 11,
   flexGrow: 1,
   fontWeight: 800,
   paddingLeft: 8,
-  color: grey[800],
+  color: theme.palette.text.primary,
   "& span": {
-    color: grey[600],
+    color: theme.palette.text.secondary,
     fontSize: 11,
   },
 }));
@@ -85,6 +85,7 @@ export const SidebarBox = ({
   noScroll = false,
   expandedByDefault,
 }: SidebarBoxProps) => {
+  const theme = useAppTheme();
   const content = (
     <ContentDiv className={classnames(noScroll && "noScroll")}>
       {children}
