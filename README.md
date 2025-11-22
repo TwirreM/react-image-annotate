@@ -28,33 +28,11 @@ Implemented features in fork:
 
 ## Usage
 
-`npm i @idapgroup/react-image-annotate`
+Use it as a workspace in your project, e.g. `packages/react-image-annotate`. Then add it to the `package.json`.
 
-```javascript
-import React from "react";
-import ReactImageAnnotate from "@idapgroup/react-image-annotate";
+For usage, see an example in `src/index.tsx`.
 
-const App = () => (
-  <ReactImageAnnotate
-    labelImages
-    regionClsList={["Alpha", "Beta", "Charlie", "Delta"]}
-    regionTagList={["tag1", "tag2", "tag3"]}
-    images={[
-      {
-        src: "https://placekitten.com/408/287",
-        name: "Image 1",
-        regions: []
-      }
-    ]}
-  />
-);
-
-export default App;
-
-```
-
-To get the proper fonts, make sure to import the Inter UI or Roboto font, the
-following line added to a css file should suffice.
+To get the proper fonts, make sure to import the Inter UI or Roboto font, the following line added to a css file should suffice.
 
 ```css
 @import url("https://rsms.me/inter/inter.css");
