@@ -8,8 +8,12 @@ the [code sandbox here](https://codesandbox.io/s/react-image-annotate-example-38
 
 Implemented features in fork:
 
-- added typescript
-- updated react to v.18
+- added typescript (idapgroup)
+- updated react to v.19
+- make dependency set leaner
+- make trackpad scrolling smoother
+- remember last used tags
+- support dark mode
 
 ## Features
 
@@ -19,7 +23,8 @@ Implemented features in fork:
 - Multiple Images
 - Cursor Crosshair
 
-![Screenshot of Annotator](https://user-images.githubusercontent.com/1910070/51199716-83c72080-18c5-11e9-837c-c3a89c8caef4.png)
+![Screenshot of Annotator](./.github/images/ui-dark-mode.webp#gh-dark-mode-only)
+![Screenshot of Annotator](./.github/images/ui-light-mode.webp#gh-light-mode-only)
 
 ## Usage
 
@@ -89,18 +94,12 @@ All of the following properties can be defined on the Annotator...
 
 ### Development
 
-This project uses [react-storybook](https://storybook.js.org/). To begin developing run the following commands in the
-cloned repo.
+To begin developing run the following commands in the cloned repo.
 
-1. `yarn install`
-2. `yarn add react react-dom`
-3. For production build need remove `react` and `react-dom` packages and
-   run `yarn build` - it fix the issue with `react` and `react-dom` versions in your project.
+1. `bun i`
+2. `bunx --bun vite`
 
-A browser tab will automatically open with the project components.
-
-See more details in
-the [contributing guidelines](https://github.com/waoai/react-image-annotate/wiki/Setup-for-Development).
+Click the link in the console to get the demo page.
 
 ### Icons
 
